@@ -13,9 +13,13 @@ socket = io.connect()
 
 socket.on("connect", () -> socket.emit("begin", {}))
 
-for tag in $(".meaningful")
+for tag in $(".stat")
     s = tag.text.trim().toLowerCase()   # corresponding socketio name
-    tag.onclick = () -> socket.emit(s, {})
+    tag.onclick = do (cls, s) -> -> socket.emit("stat", s)
+
+for tag in $(".graph")
+    s = tag.text.trim().toLowerCase()   # corresponding socketio name
+    tag.onclick = do (cls, s) -> -> socket.emit("stat", s)
 
 for tag in $(".display")
     tag.scrollTop = tag.scrollHeight
@@ -23,9 +27,9 @@ for tag in $(".display")
 socket.on("display", (msg) ->
     tag = $("#result")[0]
     if msg["safe"]
-        tag.innerHTML += "<br/>" + msg["display"]
+        tag.innerHTML += msg["display"] + "<br/>"
     else
-        tag.innerHTML += "<br/>" + escape(msg["display"])
+        tag.innerHTML += escape(msg["display"]) + "<br/>"
     tag.scrollTop = tag.scrollHeight    # scroll to bottom
 )
 

@@ -1,8 +1,9 @@
 import blaze as bz
-import pandas as pd
 
 from flask import Flask, render_template
 from flask.ext.socketio import SocketIO
+
+import compute
 
 
 data = bz.Table("test/iris.csv")
@@ -13,18 +14,21 @@ socketio = SocketIO(app)
 def index(interval=0.05):
     return render_template("app.html")
 
-@socketio.on("max")
-def max(msg):
-    result = bz.compute(data.max())
-    df = pd.DataFrame(index=data.columns)
-    df["Max"] = result
-    socketio.emit("display", {"safe":True, "display":df.to_html()})
+@socketio.on("stat")
+def stat(msg):
+    funcs = {"tukey five number summary" : compute.tukeyFiveNum,
+            "mean and standard deviation" : compute.meanStd}
+
+    f = funcs[msg]
+    socketio.emit("display", {"safe":True, "display":f(data).to_html()})
+
+@server.on("graph")
+def graph(msg):
+    pass
 
 @socketio.on("begin")
 def begin(msg):
     socketio.emit("data", data.to_html())
-
-
 
 if __name__ == "__main__":
     debug = True
