@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="navbar navbar-default navbar-fixed-top">
+    <ul class="nav navbar-nav">
+        <li class="dropdown">
+            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                File <span class="caret"></span> </button>
+            <ul class="dropdown-menu">
+                <li> <a> Upload </a> </li>
+            </ul>
+        </li>
+
+        <li class="dropdown">
+            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                Statistics <span class="caret"></span> </button>
+            <ul class="dropdown-menu">
+                <li> <a class="meaningful"> Max </a> </li>
+            </ul>
+        </li>
+    </ul>
+
+</div>
+
+<div class="content">
+    <div class="row row-xs-height">
+        <div id="stat" class="col-md-6 col-xs-heigth"> Results </div>
+        <div id="log" class="col-md-6"> Logging </div>
+    </div>
+
+    <div class="row">
+        <div id="data" class="col-md-12"> Data </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="{{url_for('static', filename='js/socket.io-0.9.16.js')}}"> </script>
+<script src="{{url_for('static', filename='js/events.js')}}"> </script>
+{% endblock %}
