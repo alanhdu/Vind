@@ -1,13 +1,18 @@
 import blaze as bz
+from bokeh import plotting
+from bokeh import embed
+from bokeh.server import bokeh_app
 
 from flask import Flask, render_template
 from flask.ext.socketio import SocketIO
 
 import compute
+import graph
 
 
 data = bz.Table("test/iris.csv")
 app = Flask(__name__)
+app.register_blueprint(bokeh_app, url_prefix="/bokeh")
 socketio = SocketIO(app)
 
 @app.route("/")
@@ -20,11 +25,15 @@ def stat(msg):
             "mean and standard deviation" : compute.meanStd}
 
     f = funcs[msg]
-    socketio.emit("display", {"safe":True, "display":f(data).to_html()})
+    socketio.emit("display", {"safe":True, "type": "stat", "display":f(data).to_html()})
 
-@server.on("graph")
-def graph(msg):
-    pass
+@socketio.on("graph")
+def plot(msg):
+    funcs = {"scatter plot": graph.scatter}
+    f = funcs[msg]
+    tag = embed.autoload_server(*f(data))
+    print tag
+    socketio.emit("display", {"safe":True, "type": "graph", "display":tag})
 
 @socketio.on("begin")
 def begin(msg):
@@ -32,4 +41,5 @@ def begin(msg):
 
 if __name__ == "__main__":
     debug = True
+    plotting.output_server("test")
     socketio.run(app, port=8080)
