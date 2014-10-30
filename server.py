@@ -1,4 +1,5 @@
 import blaze as bz
+import pandas as pd
 
 from flask import Flask, render_template
 from flask.ext.socketio import SocketIO
@@ -14,7 +15,10 @@ def index(interval=0.05):
 
 @socketio.on("max")
 def max(msg):
-    socketio.emit("display", repr(data.max()))
+    result = bz.compute(data.max())
+    df = pd.DataFrame(index=data.columns)
+    df["Max"] = result
+    socketio.emit("display", {"safe":True, "display":df.to_html()})
 
 @socketio.on("begin")
 def begin(msg):
