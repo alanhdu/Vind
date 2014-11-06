@@ -17,7 +17,6 @@ def file_upload():
     f.save(fname)
 
     app.data = bz.Table(fname)
-    with current_app.app_context():
-        app.socketio.emit("data", app.data.to_html())
+    app.socketio.emit("data", app.data.to_html())
 
     return ""

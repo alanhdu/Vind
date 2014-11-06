@@ -1,5 +1,6 @@
 from flask import Flask, render_template
 from flask.ext.socketio import SocketIO
+import blaze as bz
 
 import compute
 import graph
@@ -34,3 +35,7 @@ def plot(msg):
     f = funcs[msg]
     tag = embed.autoload_server(*f(data))
     socketio.emit("display", {"safe":True, "type": "graph", "display":tag})
+
+@socketio.on("begin")
+def start(msg): # Register socket as active so we can emit to it
+    pass

@@ -11,6 +11,8 @@ escape = (str) ->
 
 socket = io.connect()
 
+socket.on("connect", () -> socket.emit("begin", {}))
+
 for tag in $(".stat")
     s = tag.text.trim().toLowerCase()   # corresponding socketio name
     # do (s) -> -> for weird function closure thing w/ JS
@@ -38,6 +40,6 @@ socket.on("display", (msg) ->
 )
 
 socket.on("data", (msg) ->
-    alert("Receiving")
     $("#data")[0].innerHTML = msg
 )
+
