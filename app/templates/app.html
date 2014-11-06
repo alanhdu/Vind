@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="navbar navbar-default navbar-fixed-top">
+    <ul class="nav navbar-nav">
+        <li class="dropdown">
+            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                File <span class="caret"></span> </button>
+            <ul class="dropdown-menu">
+                <li> <a> Upload </a> </li>
+            </ul>
+        </li>
+
+        <li class="dropdown">
+            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                Statistics <span class="caret"></span> </button>
+            <ul class="dropdown-menu">
+                <li> <a class="meaningful stat"> Tukey Five Number Summary </a> </li>
+                <li> <a class="meaningful stat"> Mean and Standard Deviation </a> </li>
+            </ul>
+        </li>
+
+        <li class="dropdown">
+            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                Graphs <span class="caret"></span> </button>
+            <ul class="dropdown-menu">
+                <li> <a class="meaningful graph"> Scatter Plot </a> </li>
+            </ul>
+        </li>
+    </ul>
+
+</div>
+
+<div class="content">
+    <div class="row row-xs-height">
+        <div id="result" class="col-md-6 col-xs-heigth display"> <h1>Results</h1> </div>
+        <div id="data" class="col-md-6 display"> <h1>Data</h1> </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="{{url_for('static', filename='js/socket.io-0.9.16.js')}}"> </script>
+<script src="{{url_for('static', filename='js/events.js')}}"> </script>
+{% endblock %}
