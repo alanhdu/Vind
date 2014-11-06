@@ -1,4 +1,5 @@
 bokeh/*
+tmp/*
 *.js
 
 *~

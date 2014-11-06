@@ -3,12 +3,15 @@ from flask.ext.socketio import SocketIO
 
 import compute
 import graph
+from .forms import forms as forms_blueprint
 
 socketio = SocketIO()
+data = None
 
 def create_app(debug=False):
     app = Flask(__name__)
     app.debug = debug
+    app.register_blueprint(forms_blueprint, url_prefix="/forms")
 
     socketio.init_app(app)
 
@@ -18,12 +21,10 @@ def create_app(debug=False):
 
     return app
 
-
 @socketio.on("stat")
 def stat(msg):
     funcs = {"tukey five number summary" : compute.tukeyFiveNum,
             "mean and standard deviation" : compute.meanStd}
-
     f = funcs[msg]
     socketio.emit("display", {"safe":True, "type": "stat", "display":f(data).to_html()})
 

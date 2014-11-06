@@ -11,10 +11,9 @@ escape = (str) ->
 
 socket = io.connect()
 
-socket.on("connect", () -> socket.emit("begin", {}))
-
 for tag in $(".stat")
     s = tag.text.trim().toLowerCase()   # corresponding socketio name
+    # do (s) -> -> for weird function closure thing w/ JS
     tag.onclick = do (s) -> -> socket.emit("stat", s)
 
 for tag in $(".graph")
@@ -36,4 +35,9 @@ socket.on("display", (msg) ->
         tag.appendChild(script)
         $.getScript(script.src)
     tag.scrollTop = tag.scrollHeight    # scroll to bottom
+)
+
+socket.on("data", (msg) ->
+    alert("Receiving")
+    $("#data")[0].innerHTML = msg
 )
