@@ -1,41 +1,47 @@
-from flask import Flask, render_template
-from flask.ext.socketio import SocketIO
-import blaze as bz
+import random
 
-import compute
-import graph
+from flask import Flask, render_template, make_response, session
+from flask.ext.socketio import SocketIO, join_room
+from flask_kvsession import KVSessionExtension
+from simplekv.fs import FilesystemStore
+import redis
+
+import app.compute
+import app.graph
 from .forms import forms as forms_blueprint
 
-socketio = SocketIO()
-data = None
+data = {}
+store = FilesystemStore("./data")
 
-def create_app(debug=False):
-    app = Flask(__name__)
-    app.debug = debug
-    app.register_blueprint(forms_blueprint, url_prefix="/forms")
+app = Flask(__name__)
+app.register_blueprint(forms_blueprint, url_prefix="/forms")
 
-    socketio.init_app(app)
+KVSessionExtension(store, app)
+socketio = SocketIO(app)
 
-    @app.route("/")
-    def index():
-        return render_template("app.html")
-
-    return app
+@app.route("/")
+def index():
+    return render_template("app.html")
 
 @socketio.on("stat")
 def stat(msg):
     funcs = {"tukey five number summary" : compute.tukeyFiveNum,
-            "mean and standard deviation" : compute.meanStd}
-    f = funcs[msg]
-    socketio.emit("display", {"safe":True, "type": "stat", "display":f(data).to_html()})
-
-@socketio.on("graph")
-def plot(msg):
-    funcs = {"scatter plot": graph.scatter}
-    f = funcs[msg]
-    tag = embed.autoload_server(*f(data))
-    socketio.emit("display", {"safe":True, "type": "graph", "display":tag})
+             "mean and standard deviation" : compute.meanStd}
+    result = funcs[msg](data[session["sid"]])
+    json = {"safe": True, "type": "stat", "display": result.to_html()}
+    socketio.emit("display", json, room=session["sid"])
 
 @socketio.on("begin")
-def start(msg): # Register socket as active so we can emit to it
-    pass
+def start(msg):
+    bits = random.getrandbits(32)
+    while bits in data:
+        bits = random.getrandbits(32)
+
+    data[bits] = None
+    session["sid"] = bits
+    join_room(bits)
+    socketio.emit("register", {"id":bits}, room=session["sid"])
+
+@socketio.on("disconnect")
+def disconnect():
+    data.pop(session["sid"], None)

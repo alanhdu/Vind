@@ -1,6 +1,6 @@
-from app import create_app, socketio
+from app import app, socketio
 
 
 if __name__ == "__main__":
-    app = create_app()
+    app.secret_key = "it's a secret"
     socketio.run(app)

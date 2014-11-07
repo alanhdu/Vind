@@ -13,6 +13,10 @@ socket = io.connect()
 
 socket.on("connect", () -> socket.emit("begin", {}))
 
+socket.on("register", (msg) ->
+    window.id = msg["id"]
+)
+
 for tag in $(".stat")
     s = tag.text.trim().toLowerCase()   # corresponding socketio name
     # do (s) -> -> for weird function closure thing w/ JS
@@ -42,4 +46,3 @@ socket.on("display", (msg) ->
 socket.on("data", (msg) ->
     $("#data")[0].innerHTML = msg
 )
-
