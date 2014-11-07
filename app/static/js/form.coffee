@@ -1,5 +1,5 @@
-$("#file_upload_submit").click( () ->
-    data = new FormData($("#file_upload_form")[0])
+$("#file-upload-submit").click( () ->
+    data = new FormData($("#file-upload-form")[0])
     data.append("id", window.id)
 
     $.ajax( {

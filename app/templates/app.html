@@ -1,57 +1,30 @@
 {% extends "base.html" %}
 
+
 {% block modals %}
-<div class="modal fade" id="file-upload" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header"> 
-                <button type="button" class="close" data-dismiss="modal">
-                    <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
-                </button>
-                <h4 class="modal-title"> Upload File </h4>
-            </div>
-            <div class="modal-body">
-                <form method="post" id="file_upload_form">
-                    <input type="file" name="file_upload" id="file_upload_data">
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal" id="file_upload_submit">Upload</button>
-            </div>
-        </div>
-    </div>
-</div>
+{% include "forms/file_upload.html"%}
 {% endblock %}
+
+{% macro dropdown(menu, options) %}
+<li class="dropdown">
+    <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+        {{ menu }} <span class="caret"></span> </button>
+    <ul class="dropdown-menu">
+        {% for option in options %}
+        <li> <a data-toggle="modal" data-target="{{option[1]}}"> {{ option[0] }} </a> </li>
+        {% endfor %}
+    </ul>
+</li>
+{% endmacro %}
 
 {% block content %}
 <div class="navbar navbar-default navbar-fixed-top">
     <ul class="nav navbar-nav">
-        <li class="dropdown">
-            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                File <span class="caret"></span> </button>
-            <ul class="dropdown-menu">
-                <button class="btn btn-default" data-toggle="modal" data-target="#file-upload">
-                    Upload File
-                </button>
-            </ul>
-        </li>
-
-        <li class="dropdown">
-            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                Statistics <span class="caret"></span> </button>
-            <ul class="dropdown-menu">
-                <li> <a class="meaningful stat"> Tukey Five Number Summary </a> </li>
-                <li> <a class="meaningful stat"> Mean and Standard Deviation </a> </li>
-            </ul>
-        </li>
-
-        <li class="dropdown">
-            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                Graphs <span class="caret"></span> </button>
-            <ul class="dropdown-menu">
-                <li> <a class="meaningful graph"> Scatter Plot </a> </li>
-            </ul>
-        </li>
+        {{ dropdown("File", 
+            [("Upload", "#file-upload")]) }} 
+        {{ dropdown("Statistics",
+            [("Tukey 5 Number Summary", "#tukey-five-number"),
+             ("Mean and Standard Deviation", "#mean-std")]) }}
     </ul>
 
 </div>
