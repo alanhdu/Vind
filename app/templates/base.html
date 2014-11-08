@@ -7,9 +7,7 @@
         <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/bootstrap.min.css')}}">
         <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/main.css')}}">
         {% endblock %}
-
     </head>
-
     <body>
         {% block modals %}
         {% endblock %}
@@ -17,11 +15,9 @@
             {% block content %}
             {% endblock %}
         </div>
-
         {% block scripts %}
         <script src="{{url_for('static', filename='js/jquery-2.1.1.min.js')}}"></script>
         <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
         {% endblock %}
-
     </body>
 </html>

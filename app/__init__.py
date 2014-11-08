@@ -23,11 +23,11 @@ socketio = SocketIO(app)
 def index():
     return render_template("app.html")
 
-@socketio.on("stat")
+@socketio.on("compute")
 def stat(msg):
-    funcs = {"tukey five number summary" : compute.tukeyFiveNum,
-             "mean and standard deviation" : compute.meanStd}
-    result = funcs[msg](data[session["sid"]])
+    funcs = {"descriptive stat": compute.describe}
+    f = funcs[msg.pop("type")]
+    result = f(data[session["sid"]], **msg)
     json = {"safe": True, "type": "stat", "display": result.to_html()}
     socketio.emit("display", json, room=session["sid"])
 

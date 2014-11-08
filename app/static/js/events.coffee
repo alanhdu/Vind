@@ -10,21 +10,13 @@ escape = (str) ->
     )
 
 socket = io.connect()
+window.socket = socket
 
 socket.on("connect", () -> socket.emit("begin", {}))
 
 socket.on("register", (msg) ->
     window.id = msg["id"]
 )
-
-for tag in $(".stat")
-    s = tag.text.trim().toLowerCase()   # corresponding socketio name
-    # do (s) -> -> for weird function closure thing w/ JS
-    tag.onclick = do (s) -> -> socket.emit("stat", s)
-
-for tag in $(".graph")
-    s = tag.text.trim().toLowerCase()
-    tag.onclick = do (s) -> -> socket.emit("graph", s)
 
 for tag in $(".display")
     tag.scrollTop = tag.scrollHeight
@@ -45,4 +37,12 @@ socket.on("display", (msg) ->
 
 socket.on("data", (msg) ->
     $("#data")[0].innerHTML = msg
+    for select in $(".column-select")
+        select.innerHTML = ""
+        for tag in $("#data").find("thead").find("th")
+            if tag.textContent
+                option = document.createElement("option")
+                option.innerHTML = tag.textContent
+                option.value = tag.textContent
+                select.appendChild(option)
 )

@@ -3,6 +3,7 @@
 
 {% block modals %}
 {% include "forms/file_upload.html"%}
+{% include "forms/descriptive_stat.html"%}
 {% endblock %}
 
 {% macro dropdown(menu, options) %}
@@ -11,7 +12,7 @@
         {{ menu }} <span class="caret"></span> </button>
     <ul class="dropdown-menu">
         {% for option in options %}
-        <li> <a data-toggle="modal" data-target="{{option[1]}}"> {{ option[0] }} </a> </li>
+        <li> <a data-toggle="modal" data-target="#{{option[1]}}"> {{ option[0] }} </a> </li>
         {% endfor %}
     </ul>
 </li>
@@ -21,10 +22,9 @@
 <div class="navbar navbar-default navbar-fixed-top">
     <ul class="nav navbar-nav">
         {{ dropdown("File", 
-            [("Upload", "#file-upload")]) }} 
+             [("Upload", "file-upload")]) }} 
         {{ dropdown("Statistics",
-            [("Tukey 5 Number Summary", "#tukey-five-number"),
-             ("Mean and Standard Deviation", "#mean-std")]) }}
+             [("Descriptive Statistics", "descriptive-stat")]) }}
     </ul>
 
 </div>
@@ -39,7 +39,7 @@
 
 {% block scripts %}
 {{ super() }}
-<script src="{{url_for('static', filename='js/form.js')}}"> </script>
 <script src="{{url_for('static', filename='js/socket.io-0.9.16.js')}}"> </script>
 <script src="{{url_for('static', filename='js/events.js')}}"> </script>
+<script src="{{url_for('static', filename='js/form.js')}}"> </script>
 {% endblock %}

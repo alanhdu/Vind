@@ -9,3 +9,15 @@ $("#file-upload-submit").click( () ->
         processData: false,
         contentType: false})
 )
+
+formObject = (form) ->
+    o = new Object()
+    for field in form.serializeArray()
+        o[field["name"]] = field["value"]
+    return o
+
+$("#descriptive-stat-submit").click( () ->
+    o = formObject($("#descriptive-stat-form"))
+    o.type = "descriptive stat"
+    window.socket.emit("compute", o)
+)
