@@ -14,6 +14,6 @@ def file_upload():
 
     sid = int(request.form["id"])
     app.data[sid] = bz.Table(fname)
-    app.socketio.emit("data", app.data[sid].to_html())
+    app.socketio.emit("data", app.data[sid].to_html(), room=sid)
 
     return ""

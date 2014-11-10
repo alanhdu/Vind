@@ -5,9 +5,9 @@ from flask.ext.socketio import SocketIO, join_room
 from flask_kvsession import KVSessionExtension
 from simplekv.fs import FilesystemStore
 import redis
+import blaze as bz
 
-import app.compute
-import app.graph
+import compute
 from .forms import forms as forms_blueprint
 
 data = {}
@@ -28,7 +28,6 @@ def stat(msg):
     funcs = {"descriptive stat": compute.describe,
              "ttest1": compute.ttest1}
     f = funcs[msg.pop("type")]
-    print msg
     result = f(data[session["sid"]], **msg)
     json = {"safe": True, "type": "stat", "display": result}
     socketio.emit("display", json, room=session["sid"])
@@ -39,10 +38,11 @@ def start(msg):
     while bits in data:
         bits = random.getrandbits(32)
 
-    data[bits] = None
+    data[bits] = bz.Table("test/iris.csv")
     session["sid"] = bits
     join_room(bits)
-    socketio.emit("register", {"id":bits}, room=session["sid"])
+    socketio.emit("register", {"id":bits}, room=bits)
+    socketio.emit("data", data[bits].to_html(), room=bits)
 
 @socketio.on("disconnect")
 def disconnect():
