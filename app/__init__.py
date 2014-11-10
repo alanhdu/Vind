@@ -25,10 +25,12 @@ def index():
 
 @socketio.on("compute")
 def stat(msg):
-    funcs = {"descriptive stat": compute.describe}
+    funcs = {"descriptive stat": compute.describe,
+             "ttest1": compute.ttest1}
     f = funcs[msg.pop("type")]
+    print msg
     result = f(data[session["sid"]], **msg)
-    json = {"safe": True, "type": "stat", "display": result.to_html()}
+    json = {"safe": True, "type": "stat", "display": result}
     socketio.emit("display", json, room=session["sid"])
 
 @socketio.on("begin")

@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-
 {% block modals %}
 {% include "forms/file_upload.html"%}
 {% include "forms/descriptive_stat.html"%}
+{% include "forms/ttest1.html"%}
 {% endblock %}
 
 {% macro dropdown(menu, options) %}
@@ -24,7 +24,9 @@
         {{ dropdown("File", 
              [("Upload", "file-upload")]) }} 
         {{ dropdown("Statistics",
-             [("Descriptive Statistics", "descriptive-stat")]) }}
+             [("Descriptive Statistics", "descriptive-stat"),
+              ("1-Sample t-test", "ttest_1")
+             ]) }}
     </ul>
 
 </div>

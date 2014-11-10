@@ -21,3 +21,10 @@ $("#descriptive-stat-submit").click( () ->
     o.type = "descriptive stat"
     window.socket.emit("compute", o)
 )
+
+$("#ttest_1-submit").click( () ->
+    o = formObject($("#ttest_1-form"))
+    o.type = "ttest1"
+    o.mu = Number(o.mu)
+    window.socket.emit("compute", o)
+)

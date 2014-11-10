@@ -1,0 +1,12 @@
+{% extends "forms/base_form.html" %}
+
+{% block id %}ttest_1{% endblock %}
+{% block submit_id %}ttest_1-submit{% endblock %}
+{% block modal_title%} 1-Sample t-test {% endblock %}
+
+{% block modal_body%}
+<form method="post" id="ttest_1-form">
+    <label>Column: </label><select name="column" class="column-select"></select>
+    <label>H<sub>0</sub>: </label><input name="mu" type="number" step="any" value=0></input>
+</form>
+{% endblock %}
