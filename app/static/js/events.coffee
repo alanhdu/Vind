@@ -10,29 +10,53 @@ escape = (str) ->
     )
 
 socket = io.connect()
-window.socket = socket
-
 socket.on("connect", () -> socket.emit("begin", {}))
-
 socket.on("register", (msg) ->
     window.id = msg["id"]
 )
 
-for tag in $(".display")
-    tag.scrollTop = tag.scrollHeight
+getPanel = (id, title, content) ->
+    """
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab">
+            <h4 class="panel-title"> 
+                <a data-toggle="collapse" data-parent="#results" href="##{id}"> #{title} </a> 
+            </h4>
+        </div>
+        <div id="#{id}" class="panel-collapse collapse in" role="tabpanel">
+            <div class="panel-body">#{content}</div>
+        </div>
+    </div>"""
+
+hash = (obj) ->
+    func = (a, b) ->
+        a = ((a << 5) - a) + b.charCodeAt(0)
+        return a & a
+    return JSON.stringify(obj).split("").reduce(func, 0)
+
+window.compute = (obj) ->
+    socket.emit("compute", obj)
 
 socket.on("display", (msg) ->
-    tag = $("#result")[0]
-    if msg["type"] == "stat"
-        if msg["safe"]
-            tag.innerHTML += msg["display"] + "<br/>"
-        else
-            tag.innerHTML += escape(msg["display"]) + "<br/>"
-    else if msg["type"] == "graph"
-        script = $(msg["display"])[0]   # get script DOM
-        tag.appendChild(script)
-        $.getScript(script.src)
-    tag.scrollTop = tag.scrollHeight    # scroll to bottom
+    tag = $("#results")[0]
+    id = hash(msg["description"])
+
+    if $("#" +  id).length == 0
+        newTag = $("<div>", {id: id})[0]
+        if msg["type"] == "stat"
+            if msg["safe"]
+                newTag.innerHTML += msg["display"] + "<br/>"
+            else
+                newTag.innerHTML += escape(msg["display"]) + "<br/>"
+        else if msg["type"] == "graph"
+            script = $(msg["display"])[0]   # get script DOM
+            newTag.appendChild(script)
+            $.getScript(script.src)
+
+        tag.appendChild(newTag)
+        tag.scrollTop = tag.scrollHeight    # scroll to bottom
+
+    $("#" + id).data(msg["description"])
 )
 
 socket.on("data", (msg) ->

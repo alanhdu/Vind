@@ -22,18 +22,21 @@
 <div class="navbar navbar-default navbar-fixed-top">
     <ul class="nav navbar-nav">
         {{ dropdown("File", 
-             [("Upload", "file-upload")]) }} 
+        [("Upload", "file-upload")]) }} 
         {{ dropdown("Statistics",
-             [("Descriptive Statistics", "descriptive-stat"),
-              ("1-Sample t-test", "ttest_1")
-             ]) }}
+        [("Descriptive Statistics", "descriptive-stat"),
+        ("1-Sample t-test", "ttest_1")
+        ]) }}
     </ul>
 
 </div>
 
 <div class="content">
     <div class="row row-xs-height">
-        <div id="result" class="col-md-6 col-xs-heigth display"> <h1>Results</h1> </div>
+        <div class="col-md-6 col-xs-heigth display">
+            <h1>Results</h1>
+            <div class="panel-group" id="results" role="tablist" aria-multiselectable="true"></div>
+        </div>
         <div id="data" class="col-md-6 display"> <h1>Data</h1> </div>
     </div>
 </div>
