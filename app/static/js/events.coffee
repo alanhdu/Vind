@@ -20,7 +20,7 @@ getPanel = (id, title, content) ->
     <div class="panel panel-default">
         <div class="panel-heading" role="tab">
             <h4 class="panel-title"> 
-                <a data-toggle="collapse" data-parent="#results" href="##{id}"> #{title} </a> 
+                <a id="#{id}_title" data-toggle="collapse" data-parent="#results" href="##{id}"> #{title} </a> 
             </h4>
         </div>
         <div id="#{id}" class="panel-collapse collapse in" role="tabpanel">
@@ -42,19 +42,22 @@ socket.on("display", (msg) ->
     id = hash(msg["description"])
 
     if $("#" +  id).length == 0
-        newTag = $("<div>", {id: id})[0]
-        if msg["type"] == "stat"
-            if msg["safe"]
-                newTag.innerHTML += msg["display"] + "<br/>"
-            else
-                newTag.innerHTML += escape(msg["display"]) + "<br/>"
-        else if msg["type"] == "graph"
-            script = $(msg["display"])[0]   # get script DOM
-            newTag.appendChild(script)
-            $.getScript(script.src)
+        tag.appendChild($(getPanel(id, "", ""))[0])
 
-        tag.appendChild(newTag)
-        tag.scrollTop = tag.scrollHeight    # scroll to bottom
+    titleTag = $("#" + id + "_title")[0]
+    contentTag = $("#" + id)[0]
+    if msg["type"] == "stat"
+        if msg["safe"]
+            contentTag.innerHTML = msg["display"]
+        else
+            contentTag.innerHTML = escape(msg["display"])
+        titleTag.innerHTML = msg["description"]["type"]
+    else if msg["type"] == "graph"
+        script = $(msg["display"])[0]   # get script DOM
+        newTag.appendChild(script)
+        $.getScript(script.src)
+
+    tag.scrollTop = tag.scrollHeight    # scroll to bottom
 
     $("#" + id).data(msg["description"])
 )
