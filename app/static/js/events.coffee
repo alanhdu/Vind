@@ -20,12 +20,10 @@ getPanel = (id, title, content) ->
     <div class="panel panel-default">
         <div class="panel-heading" role="tab">
             <h4 class="panel-title"> 
-                <a id="#{id}_title" data-toggle="collapse" href="##{id}"> #{title} </a> 
+                <a id="#{id}_title" data-toggle="collapse" href="##{id}"></a> 
             </h4>
         </div>
-        <div id="#{id}" class="panel-collapse collapse in" role="tabpanel">
-            <div class="panel-body">#{content}</div>
-        </div>
+        <div id="#{id}" class="panel-collapse collapse in" role="tabpanel"></div>
     </div>"""
 
 hash = (obj) ->
@@ -42,7 +40,7 @@ socket.on("display", (msg) ->
     id = hash(msg["description"])
 
     if $("#" +  id).length == 0
-        tag.appendChild($(getPanel(id, "", ""))[0])
+        tag.appendChild($(getPanel(id))[0])
 
     titleTag = $("#" + id + "_title")[0]
     contentTag = $("#" + id)[0]
@@ -52,6 +50,7 @@ socket.on("display", (msg) ->
         else
             contentTag.innerHTML = escape(msg["display"])
         titleTag.innerHTML = msg["description"]["type"]
+        MathJax.Hub.Typeset(contentTag) # technically should be async
     else if msg["type"] == "graph"
         script = $(msg["display"])[0]   # get script DOM
         newTag.appendChild(script)

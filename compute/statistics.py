@@ -28,5 +28,5 @@ def ttest1(data, column, mu=None):
 
     if mu is not None:
         t, p = stats.ttest_1samp(data, mu)
-        return s + "<br/>" + "For \(\mu_0$={mu}\): t = {t}, p = {p}".format(mu=mu, t=t, p=p)
+        return s + "<br/>" + "For \(H_0: \mu={mu}\): \(t={t}\), \(p={p}\)".format(mu=mu, t=t, p=p)
     return s
