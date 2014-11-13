@@ -32,7 +32,7 @@ def stat(msg):
     result = f(data[session["sid"]], **msg)
     msg["type"] = type
 
-    json = {"safe": True, "type": "stat", "display": result, 
+    json = {"safe": True, "type": "stat", "display": result,
             "description": msg}
 
     socketio.emit("display", json, room=session["sid"])

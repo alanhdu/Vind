@@ -11,7 +11,7 @@ def describe(data, column):
     result["IQR"] = result["3rd Quartile"] - result["1st Quartile"]
     result["Mean"] = data.mean()
     result["Std Dev"] = data.std()
-    result["N"] = len(result)
+    result["N"] = len(data)
 
     return pd.DataFrame({column: result}).T.to_html()
 
