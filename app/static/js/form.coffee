@@ -20,15 +20,12 @@ formObject = (form) ->
         o[tag.name] = tag.value
     return o
 
-$("#descriptive-stat-submit").click( () ->
-    o = formObject("#descriptive-stat-form")
-    o.type = "descriptive stat"
-    window.compute(o)
-)
+registerForm = (id, title) ->
+    $("#" + id + "-submit").click(() ->
+        o = formObject("#" + id + "-form")
+        o.type = title
+        window.compute(o)
+    )
 
-$("#ttest_1-submit").click( () ->
-    o = formObject("#ttest_1-form")
-    o.type = "ttest1"
-    o.mu = Number(o.mu)
-    window.compute(o)
-)
+registerForm("descriptive-stat", "descriptive stat")
+registerForm("ttest_1", "ttest1")

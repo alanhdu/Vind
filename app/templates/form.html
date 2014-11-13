@@ -10,7 +10,9 @@
                 <h4 class="modal-title"> {{ title }} </h4>
             </div>
             <div class="modal-body">
-                {{ caller() }}
+                <form method="post" id="{{ id }}-form">
+                    {{ caller() }}
+            </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal" id="{{ id }}-submit">Submit</button>
@@ -21,20 +23,14 @@
 {% endmacro %}
 
 {% call modal("file-upload", "File Upload") %}
-<form method="post" id="file-upload-form">
-    <input type="file" name="file_upload" id="file-upload_data">
-</form>
+<input type="file" name="file_upload" id="file-upload_data">
 {% endcall %}
 
 {% call modal("descriptive-stat", "Descriptive Statistics") %}
-<div id="descriptive-stat-form"> 
-    <label>Column: </label><select name="column" class="column-select"></select>
-</div>
+<label>Column: </label><select name="column" class="column-select"></select>
 {% endcall %}
 
 {% call modal("ttest_1", "1 Sample t-test") %}
-<div id="ttest_1-form">
-    <label>Column: </label><select name="column" class="column-select"></select>
+<label>Column: </label><select name="column" class="column-select"></select>
     <label>H<sub>0</sub>: </label><input name="mu" type="number" step="any" value=0>
-</div>
 {% endcall %}
