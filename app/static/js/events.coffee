@@ -20,7 +20,7 @@ getPanel = (id, title, content) ->
     <div class="panel panel-default">
         <div class="panel-heading" role="tab">
             <h4 class="panel-title"> 
-                <a id="#{id}_title" data-toggle="collapse" data-parent="#results" href="##{id}"> #{title} </a> 
+                <a id="#{id}_title" data-toggle="collapse" href="##{id}"> #{title} </a> 
             </h4>
         </div>
         <div id="#{id}" class="panel-collapse collapse in" role="tabpanel">
