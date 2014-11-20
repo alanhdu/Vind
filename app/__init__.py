@@ -2,8 +2,6 @@ import random
 
 from flask import Flask, render_template, make_response, session
 from flask.ext.socketio import SocketIO, join_room
-from flask_kvsession import KVSessionExtension
-from simplekv.fs import FilesystemStore
 import redis
 import blaze as bz
 
@@ -11,12 +9,10 @@ import compute
 from .forms import forms as forms_blueprint
 
 data = {}
-store = FilesystemStore("./data")
 
 app = Flask(__name__)
 app.register_blueprint(forms_blueprint, url_prefix="/forms")
 
-KVSessionExtension(store, app)
 socketio = SocketIO(app)
 
 @app.route("/")
@@ -43,11 +39,11 @@ def start(msg):
     while bits in data:
         bits = random.getrandbits(32)
 
-    data[bits] = bz.Table("test/iris.csv")
+    data[bits] = bz.Data("test/iris.csv")
     session["sid"] = bits
     join_room(bits)
     socketio.emit("register", {"id":bits}, room=bits)
-    socketio.emit("data", data[bits].to_html(), room=bits)
+    socketio.emit("data", bz.to_html(data[bits]), room=bits)
 
 @socketio.on("disconnect")
 def disconnect():
