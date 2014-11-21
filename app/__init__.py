@@ -23,10 +23,8 @@ def index():
 def stat(msg):
     funcs = {"descriptive stat": compute.describe,
              "ttest1": compute.ttest1}
-    type = msg.pop("type")
-    f = funcs[type]
-    result = f(data[session["sid"]], **msg)
-    msg["type"] = type
+    f = funcs[msg["type"]]
+    result = f(data[session["sid"]], msg["data"], msg["parameters"])
 
     json = {"safe": True, "type": "stat", "display": result,
             "description": msg}

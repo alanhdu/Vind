@@ -10,9 +10,7 @@
                 <h4 class="modal-title"> {{ title }} </h4>
             </div>
             <div class="modal-body">
-                <form method="post" id="{{ id }}-form">
-                    {{ caller() }}
-            </form>
+                <form id="{{ id }}-form"> {{ caller () }} </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal" id="{{ id }}-submit">Submit</button>
@@ -27,10 +25,11 @@
 {% endcall %}
 
 {% call modal("descriptive-stat", "Descriptive Statistics") %}
-<label>Column: </label><select name="column" class="column-select"></select>
+<label>Column: </label><select name="column" class="column-select data"></select>
 {% endcall %}
 
-{% call modal("ttest_1", "1 Sample t-test") %}
-<label>Column: </label><select name="column" class="column-select"></select>
-<label>H<sub>0</sub>: </label><input name="mu" type="number" step="any" value=0>
+
+{% call modal("ttest1", "1 Sample t-test") %}
+<label>Column: </label><select name="column" class="column-select data"></select>
+<label>H<sub>0</sub>: </label><input name="mu" type="number" step="any" value=0 class="parameter">
 {% endcall %}

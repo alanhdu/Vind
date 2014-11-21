@@ -19,12 +19,16 @@
 {% block content %}
 <div class="navbar navbar-default navbar-fixed-top">
     <ul class="nav navbar-nav">
-        {{ dropdown("File", 
-        [("Upload", "file-upload")]) }} 
-        {{ dropdown("Statistics",
-        [("Descriptive Statistics", "descriptive-stat"),
-        ("1-Sample t-test", "ttest_1")
-        ]) }}
+        {{ dropdown("File", [
+            ("Upload", "file-upload")
+           ])
+        }} 
+
+        {{ dropdown("Statistics", [
+            ("Descriptive Statistics", "descriptive-stat"),
+            ("1-Sample t-test", "ttest1")
+           ])
+        }}
     </ul>
 
 </div>
