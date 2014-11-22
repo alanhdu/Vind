@@ -15,18 +15,7 @@ socket.on("register", (msg) ->
     window.id = msg["id"]
 )
 
-getPanel = (id, title, content) ->
-    """
-    <div class="panel panel-default">
-        <div class="panel-heading" role="tab">
-            <h4 class="panel-title"> 
-                <a id="#{id}_title" data-toggle="collapse" href="##{id}"></a> 
-            </h4>
-        </div>
-        <div id="#{id}" class="panel-collapse collapse in" role="tabpanel"></div>
-    </div>"""
-
-hash = (obj) ->
+window.hash = (obj) ->
     func = (a, b) ->
         a = ((a << 5) - a) + b.charCodeAt(0)
         return a & a
@@ -35,12 +24,9 @@ hash = (obj) ->
 window.compute = (obj) ->
     socket.emit("compute", obj)
 
-socket.on("display", (msg) ->
+socket.on("result", (msg) ->
     tag = $("#results")[0]
-    id = hash(msg["description"])
-
-    if $("#" +  id).length == 0
-        tag.appendChild($(getPanel(id))[0])
+    id = window.hash(msg["description"]["data"])
 
     titleTag = $("#" + id + "_title")[0]
     contentTag = $("#" + id)[0]
@@ -71,4 +57,5 @@ socket.on("data", (msg) ->
                 option.innerHTML = tag.textContent
                 option.value = tag.textContent
                 select.appendChild(option)
+    #for tag in $(".result-panel")
 )

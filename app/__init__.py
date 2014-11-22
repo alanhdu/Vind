@@ -21,15 +21,15 @@ def index():
 
 @socketio.on("compute")
 def stat(msg):
-    funcs = {"descriptive stat": compute.describe,
-             "ttest1": compute.ttest1}
+    funcs = {"Descriptive Statistics": compute.describe,
+             "1 Sample T-Test": compute.ttest1}
     f = funcs[msg["type"]]
     result = f(data[session["sid"]], msg["data"], msg["parameters"])
 
     json = {"safe": True, "type": "stat", "display": result,
             "description": msg}
 
-    socketio.emit("display", json, room=session["sid"])
+    socketio.emit("result", json, room=session["sid"])
 
 @socketio.on("begin")
 def start(msg):

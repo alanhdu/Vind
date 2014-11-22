@@ -13,7 +13,7 @@ def file_upload():
     f.save(fname)
 
     sid = int(request.form["id"])
-    app.data[sid] = bz.Table(fname)
-    app.socketio.emit("data", app.data[sid].to_html(), room=sid)
+    app.data[sid] = bz.Data(fname)
+    app.socketio.emit("data", bz.to_html(app.data[sid]), room=sid)
 
     return ""
