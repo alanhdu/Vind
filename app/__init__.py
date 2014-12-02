@@ -1,7 +1,6 @@
 import random
 
 from flask import Flask, render_template, make_response, session
-from flask.ext.socketio import SocketIO, join_room
 import blaze as bz
 
 from .forms import forms as forms_blueprint

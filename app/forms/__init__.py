@@ -23,7 +23,7 @@ def file_upload():
 def stat():
     funcs = {"descriptive-stat": compute.describe,
              "ttest1": compute.ttest1}
-    msg = json.loads(request.data)
+    msg = json.loads(request.data.decode("utf-8"))
     f = funcs[msg["type"]]
     result = f(app.data[session["sid"]], msg["data"], msg["parameters"])
 
