@@ -1,8 +1,11 @@
-from flask import Blueprint, request
+import json
+
+from flask import Blueprint, request, session
 from werkzeug import secure_filename
 import blaze as bz
 
 import app
+import compute
 
 forms = Blueprint("forms", __name__)
 
@@ -12,8 +15,16 @@ def file_upload():
     fname = "tmp/" + secure_filename(f.filename)
     f.save(fname)
 
-    sid = int(request.form["id"])
+    sid = session["sid"]
     app.data[sid] = bz.Data(fname)
-    app.socketio.emit("data", bz.to_html(app.data[sid]), room=sid)
+    return bz.to_html(app.data[sid])
 
-    return ""
+@forms.route("/statistics", methods=["POST"])
+def stat():
+    funcs = {"descriptive-stat": compute.describe,
+             "ttest1": compute.ttest1}
+    msg = json.loads(request.data)
+    f = funcs[msg["type"]]
+    result = f(app.data[session["sid"]], msg["data"], msg["parameters"])
+
+    return json.dumps({"result": result})
