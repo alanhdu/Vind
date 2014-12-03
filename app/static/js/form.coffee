@@ -1,3 +1,8 @@
+send = (url, data, success) ->
+    $.ajax({
+        url: url, type: "POST", data: data,
+        processData: false, contentType: false}).done(success)
+
 $("#file-upload-submit").click( () ->
     data = new FormData($("#file-upload-form")[0])
     success = (msg) ->
@@ -10,12 +15,7 @@ $("#file-upload-submit").click( () ->
                     option.innerHTML = tag.textContent
                     option.value = tag.textContent
                     select.appendChild(option)
-    $.ajax({
-        url: "/forms/file_upload",
-        type: "POST",
-        data: data,
-        processData: false,
-        contentType: false}).done(success)
+    send("/forms/file_upload", data, success)
 )
 
 
@@ -55,13 +55,7 @@ class Analysis
             contentTag.innerHTML = JSON.parse(result).result
             titleTag.innerHTML = type
             MathJax.Hub.Typeset(contentTag) # technically should be async
-
-        $.ajax({
-            url: "/forms/statistics",
-            type: "POST",
-            data: @.to_json(),
-            processData: false,
-            contentType: false}).done(render)
+        send("/forms/statistics", @.to_json(), render)
 
 
 class AnalysisCollection
