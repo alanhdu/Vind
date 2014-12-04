@@ -1,7 +1,8 @@
 send = (url, data, success) ->
     $.ajax({
         url: url, type: "POST", data: data,
-        processData: false, contentType: false}).done(success)
+        processData: false, contentType: false
+    }).done(success)
 
 $("#file-upload-submit").click( () ->
     data = new FormData($("#file-upload-form")[0])
@@ -25,8 +26,7 @@ class Analysis
         @data = {}
 
         form = $("##{@type}-form")
-
-        for tag in form.find("input")
+        for tag in form.find(":input")
             if tag.type == "number"
                 value = Number(tag.value)
             else
@@ -37,23 +37,18 @@ class Analysis
             if "data" in tag.classList
                 @data[tag.name] = value
 
-        for tag in form.find("select")
-            if "parameter" in tag.classList
-                @parameters[tag.name] = tag.value
-            if "data" in tag.classList
-                @data[tag.name] = tag.value
-
-        @hash = window.hash(@data) + window.hash(@type)
+        @hash = JSON.stringify({data: @data, type: @type})
 
     to_json: () ->
         return JSON.stringify({data: @data, type: @type, parameters:@parameters})
+
     compute: (panel) ->
-        type = @type
+        title = @title
         render = (result) ->
             titleTag = panel.find(".analysis-title")[0]
             contentTag = panel.find(".analysis")[0]
             contentTag.innerHTML = JSON.parse(result).result
-            titleTag.innerHTML = type
+            titleTag.innerHTML = title
             MathJax.Hub.Typeset(contentTag) # technically should be async
         send("/forms/statistics", @.to_json(), render)
 
@@ -62,11 +57,12 @@ class AnalysisCollection
     constructor: () ->
         @analyses = {}
         @panels = {}
+        @size = 0
 
     add: (id, title) ->
         g = new Analysis(id, title)
         if g.hash of @analyses
-            # if nothing's changed, to bother recomputing
+            # if nothing's changed, don't bother recomputing
             if JSON.stringify(g) != JSON.stringify(@analyses[g.hash])
                 @analyses[g.hash].parameters = g.parameters
                 @analyses[g.hash].compute(@panels[g.hash])
@@ -76,15 +72,15 @@ class AnalysisCollection
             <div class="panel panel-default">
                <div class="panel-heading" role="tab">
                    <h4 class="panel-title"> 
-                       <a id="#{g.hash}_title" class="analysis-title" data-toggle="collapse" href="##{g.hash}"> #{g.type} </a> 
+                       <a class="analysis-title" data-toggle="collapse" href="#analysis_#{@size}"> #{g.type} </a> 
                    </h4>
                </div>
-               <div id="#{g.hash}" class="analysis panel-collapse collapse in result-panel" role="tabpanel"></div>
+               <div id="analysis_#{@size}" class="analysis panel-collapse collapse in result-panel" role="tabpanel"></div>
             </div>""")
 
             tag = $("#results").append(panel)
             @panels[g.hash] = panel
-            tag.append(g.panel)
+            @size += 1
             g.compute(@panels[g.hash])
         return null
 
@@ -92,9 +88,7 @@ class AnalysisCollection
 window.analyses = new AnalysisCollection()
 
 registerForm = (id, title) ->
-    $("##{id}-submit").click(() ->
-        window.analyses.add(id, title)
-    )
+    $("##{id}-submit").click(() -> window.analyses.add(id, title))
 
 registerForm("descriptive-stat", "Descriptive Statistics")
 registerForm("ttest1", "1 Sample T-Test")
