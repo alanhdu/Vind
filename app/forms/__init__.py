@@ -9,6 +9,7 @@ import compute
 
 forms = Blueprint("forms", __name__)
 
+
 @forms.route("/file_upload", methods=["POST"])
 def file_upload():
     f = request.files["file_upload"]
@@ -27,4 +28,4 @@ def stat():
     f = funcs[msg["type"]]
     result = f(app.data[session["sid"]], msg["data"], msg["parameters"])
 
-    return json.dumps({"result": result})
+    return json.dumps({"result": result.to_html()})

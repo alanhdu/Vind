@@ -45,6 +45,15 @@ class Analysis
 
     to_json: () ->
         return JSON.stringify({data: @data, type: @type, parameters:@parameters})
+    validate: () ->
+        for name, value of @data
+            if not value
+                return false
+        for name, value of @parameters
+            if not value
+                return false
+        return true
+
 
     compute: (panel) ->
         title = @title
@@ -65,7 +74,7 @@ class AnalysisCollection
 
     add: (id, title) ->
         g = new Analysis(id, title)
-        if g.data is not undefined
+        if g.validate()
             if g.id of @analyses
                 # if nothing's changed, don't bother recomputing
                 if JSON.stringify(g) != JSON.stringify(@analyses[g.id])
