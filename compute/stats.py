@@ -8,7 +8,6 @@ from .render import Results, wrap_results, StatisticalTest
 def describe(df, data, parameters):
     column = data["column"]     # INPUT
 
-
     df = bz.into(pd.Series, df[column])
     description = df.quantile([0, 0.25, 0.5, 0.75, 1])
     description.index = ["Min", "1st Quartile", "Median", "3rd Quartile", "Max"]
@@ -38,8 +37,8 @@ def ttest1(df, data, parameters):
     s = StatisticalTest(ci=(conf, ci), stat=("\mu", mean))
 
     if mu_0 is not None:
-        t, p = stats.ttest_1samp(df, mu_0)
-        s.Ho = ("\mu_o", mu_0)
+        t, p = stats.ttest_1samp(df, mu_0)  # OUTPUT
+        s.Ho = ("\mu_0", mu_0)
         s.test = ("t", t)
         s.p = p
     return [s]

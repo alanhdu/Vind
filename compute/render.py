@@ -48,13 +48,13 @@ class StatisticalTest(object):
         if self.ci:
             conf, (low, high) = self.ci
             low, high = format_float(low), format_float(high)
-            f = "<p> {conf:0.2%} Confidence Interval:\({low}, {high}\) </p>"
+            f = "<p> {conf:0.2%} Confidence Interval: \({low}, {high}\) </p>"
             s += f.format(conf=conf, low=low, high=high)
         if self.Ho:
             h_name, h_value = self.Ho
             t_name, t_value = self.test
             h_value, t_value, p = format_float(h_value), format_float(t_value), format_float(self.p)
-            f = "<p> For \(H_o: {h_name}={h_value} \), \({t_name}={t_value}\), \(p={p}\) </p>"
+            f = "<p> For \(H_0: {h_name}={h_value} \), \({t_name}={t_value}\), \(p={p}\) </p>"
             s += f.format(h_name=h_name, h_value=h_value, t_name=t_name, 
                           t_value=t_value, p=p)
         return s
