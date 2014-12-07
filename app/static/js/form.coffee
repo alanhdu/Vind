@@ -16,7 +16,11 @@ $("#file-upload-submit").click( () ->
                     option.innerHTML = tag.textContent
                     option.value = tag.textContent
                     select.appendChild(option)
-    send("/forms/file_upload", data, success)
+    if $("#file-upload_data")[0].value
+        send("/forms/file_upload", data, success)
+    else
+        alert("Form not valid")
+
 )
 
 
@@ -37,7 +41,7 @@ class Analysis
             if "data" in tag.classList
                 @data[tag.name] = value
 
-        @hash = JSON.stringify({data: @data, type: @type})
+        @id = JSON.stringify({data: @data, type: @type})
 
     to_json: () ->
         return JSON.stringify({data: @data, type: @type, parameters:@parameters})
@@ -61,27 +65,30 @@ class AnalysisCollection
 
     add: (id, title) ->
         g = new Analysis(id, title)
-        if g.hash of @analyses
-            # if nothing's changed, don't bother recomputing
-            if JSON.stringify(g) != JSON.stringify(@analyses[g.hash])
-                @analyses[g.hash].parameters = g.parameters
-                @analyses[g.hash].compute(@panels[g.hash])
-        else
-            @analyses[g.hash] = g
-            panel = $("""
-            <div class="panel panel-default">
-               <div class="panel-heading" role="tab">
-                   <h4 class="panel-title"> 
-                       <a class="analysis-title" data-toggle="collapse" href="#analysis_#{@size}"> #{g.type} </a> 
-                   </h4>
-               </div>
-               <div id="analysis_#{@size}" class="analysis panel-collapse collapse in result-panel" role="tabpanel"></div>
-            </div>""")
+        if g.data is not undefined
+            if g.id of @analyses
+                # if nothing's changed, don't bother recomputing
+                if JSON.stringify(g) != JSON.stringify(@analyses[g.id])
+                    @analyses[g.id].parameters = g.parameters
+                    @analyses[g.id].compute(@panels[g.id])
+            else
+                @analyses[g.id] = g
+                panel = $("""
+                <div class="panel panel-default">
+                   <div class="panel-heading" role="tab">
+                       <h4 class="panel-title"> 
+                           <a class="analysis-title" data-toggle="collapse" href="#analysis_#{@size}"> #{g.type} </a> 
+                       </h4>
+                   </div>
+                   <div id="analysis_#{@size}" class="analysis panel-collapse collapse in result-panel" role="tabpanel"></div>
+                </div>""")
 
-            tag = $("#results").append(panel)
-            @panels[g.hash] = panel
-            @size += 1
-            g.compute(@panels[g.hash])
+                tag = $("#results").append(panel)
+                @panels[g.id] = panel
+                @size += 1
+                g.compute(@panels[g.id])
+        else
+            alert("Form not valid")
         return null
 
             
