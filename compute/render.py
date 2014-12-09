@@ -1,17 +1,70 @@
+import inspect
+
+import blaze as bz
+import pandas as pd
+from scipy import stats
+import numpy as np
+
+from IPython.nbformat import current
 from decorator import decorator
 
 def wrap_results(f):
-    return decorator(_results, f)
+    d = decorator(_results, f)
+    if hasattr(f, "__wrapped__"):
+        d.__wrapped__ = f.__wrapped__
+    return d
 
 def _results(func, *args, **kwargs):
-    return Results(results=func(*args, **kwargs))
+    return Results(func, *args, **kwargs)
 
 class Results(object):
-    assumptions, results = None, None
+    assumptions, results, code, data, parameters = None, None, None, None, None
 
-    def __init__(self, assumptions=None, results=None):
-        self.assumptions = [] if assumptions is None else assumptions
-        self.results = [] if results is None else results
+    def __init__(self, func, df, data, parameters):
+        self.results = func(df, data, parameters)
+        self.code = inspect.getsource(func)
+        self.data = data
+        self.parameters = parameters
+        self.assumptions = []
+
+    def to_ipython_cell(self, df):
+        code = []
+        outputs = []
+        local = {"data": self.data, "parameters": self.parameters}
+        for line in self.code.split("\n"):
+            if line.endswith("# INPUT"):
+                a, b = line.split("=")
+                a, b = a.strip(), b.strip()
+                value = eval(b, None, local)
+                line = '{a} = {value}'.format(a=a, value=repr(value))
+                code.append(line)
+            elif line.endswith("# OUTPUT"):
+                a, b = line.split("=")
+                outputs += [x.strip() for x in a.split(",")]
+
+                code.append(line[4:-len("# OUTPUT")].rstrip())
+
+            elif "def" not in line and not line.startswith("@") and "return" not in line:
+                code.append(line[4:])   # get rid of first indent
+
+        code = "\n".join(code)
+        gs = {"bz": bz, "pd": pd, "df": df, "stats": stats, "np":np, "StatisticalTest":StatisticalTest}
+        ls = {}
+        exec(code, gs, ls)
+
+        output_cells = []
+        for output in outputs:
+            kwargs = {}
+            if hasattr(ls[output], "to_html"):
+                kwargs["output_html"] = ls[output].to_html()
+
+            o = current.new_output("display_data", str(ls[output]), **kwargs)
+            output_cells.append(o)
+
+            code += "\ndisplay({})".format(output)
+
+        return current.new_code_cell(code, outputs=output_cells)
+
 
     def to_html(self):
         s = "<h4> Assumptions: </h4>"

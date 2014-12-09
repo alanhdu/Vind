@@ -1,6 +1,7 @@
 bokeh/*
 tmp/*
 *.js
+.ipynb*
 
 *~
 *.swp
